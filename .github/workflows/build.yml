@@ -26,6 +26,14 @@ jobs:
         with:
           gradle-version: 9.5.1
 
+      - name: Check repository layout
+        run: |
+          for f in build.gradle settings.gradle gradle.properties src/main/resources/fabric.mod.json src/main/java/com/henclient/reborn/HenClientReborn.java; do
+            if [ -f "$f" ]; then echo "OK      $f"; else echo "MISSING $f"; MISSING=1; fi
+          done
+          echo "Java files found: $(find src -name '*.java' 2>/dev/null | wc -l) (expected 34)"
+          if [ -n "$MISSING" ]; then echo "Some project files are missing from the repository."; exit 1; fi
+
       - name: Build mod
         run: gradle build --stacktrace
 
@@ -33,9 +41,9 @@ jobs:
         run: |
           JAR=$(ls build/libs/*.jar | grep -v -- '-sources' | head -n 1)
           echo "Built: $JAR"
-          unzip -l "$JAR" > jar-contents.txt
-          grep -E "fabric.mod.json|HenClientReborn.class" jar-contents.txt
-          unzip -p "$JAR" fabric.mod.json
+          unzip -l "$JAR"
+          unzip -l "$JAR" | grep -q "fabric.mod.json" || { echo "fabric.mod.json is missing from the JAR"; exit 1; }
+          unzip -l "$JAR" | grep -q "HenClientReborn.class" || { echo "Mod classes are missing from the JAR"; exit 1; }
 
       - name: Upload mod JAR
         uses: actions/upload-artifact@v4

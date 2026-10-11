@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "henclient_reborn",
+  "version": "${version}",
+  "name": "HenClient Reborn",
+  "description": "A client-side Fabric utility mod with a red and black GUI, HUD modules and exploration tools.",
+  "authors": ["HenClient Reborn contributors"],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["com.henclient.reborn.HenClientReborn"]
+  },
+  "depends": {
+    "fabricloader": ">=0.17.0",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
